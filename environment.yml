@@ -1,0 +1,27 @@
+name: SM_Pfam-gnomAD-pipeline
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3
+  - pip
+  - biopython==1.77  # Pin a version for Bio.Alphabet
+  - joblib==1.0.1  # Pin version to fix ImportError: cannot import name 'nullcontext'
+  - openjdk  # Required for AACon
+  - matplotlib>=2.0.2,<=2.1.1
+  - numpy
+  - pandas==0.20.3
+  - pysam
+  - requests
+  - requests-cache>=0.4.13  # Version required for ProteoFAV and ProIntVar
+  - scipy
+  - seaborn
+  - scikit-learn
+  - tqdm
+  - pyvcf
+  - pip:
+    - proteofav
+    - git+ssh://git@github.com/bartongroup/SM_VarAlign.git
+    - git+ssh://git@github.com/bartongroup/ProIntVar.git@f5ae6dae6e505d45be2c13ab7b44e6ed44c414a8#egg=ProIntVar-Core
+    
