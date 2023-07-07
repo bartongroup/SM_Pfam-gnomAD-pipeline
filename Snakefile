@@ -7,3 +7,13 @@ rule download_pfam:
         """
         curl -C - {params.url} -o {output}
         """
+
+rule split_pfam:
+    input:
+        "data/Pfam-A.seed.gz"
+    output:
+        directory("output")
+    params:
+        n = 100
+    script:
+        "scripts/split_pfam.py"
