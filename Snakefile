@@ -4,6 +4,10 @@ rule all:
     input:
         expand("output/{dir}/{id}/{id}.sto.log", dir=["0"], id=["PF00001_20"])
 
+rule get_data:
+    input:
+        "data/Pfam-A.seed.gz"
+
 # rule all:
 #     input:
 #         expand("output/{dir}/{id}/{id}.sto", dir=["0", "0"], id=["PF00001_20", "PF00002_23"])
