@@ -1,0 +1,45 @@
+# Pipeline config file
+[Global]
+db_pdb = ...
+db_mmcif = ...
+db_dssp = ...
+db_sifts = ...
+db_validation = ...
+db_germline_variants = ...
+db_somatic_variants = ...
+db_root = .
+
+[Downloads]
+uniprot_cache = .
+
+[Addresses]
+api_pdbe = http://www.ebi.ac.uk/pdbe/api/
+api_rcsb = http://www.rcsb.org/pdb/rest/
+api_uniprot = http://www.uniprot.org/uniprot/
+#api_ensembl = http://rest.ensembl.org/
+api_ensembl = https://grch37.rest.ensembl.org
+api_icgc = https://dcc.icgc.org/api/v1/genes/
+
+cif_fetch = http://www.ebi.ac.uk/pdbe/entry-files/
+dssp_fetch = ftp://ftp.cmbi.ru.nl//pub/molbio/data/dssp/
+sifts_fetch = ftp://ftp.ebi.ac.uk/pub/databases/msd/sifts/xml/
+validation_fetch = http://www.ebi.ac.uk/pdbe/entry-files/download/
+
+[Variables]
+contact_email = ...
+cif_extension = _updated.cif
+dssp_extension = .dssp
+sifts_extension = .xml.gz
+validation_extension = _validation.xml
+
+[Gnomad]
+# need VEP annotated VCF
+gnomad = data/sample_swissprot_PF00001.18_full.vcf.gz
+
+[VEP_Filter]
+# vep_filter is used to filter variant VEP tables via DataFrame.query
+canonical = True
+additional = VARIANT_CLASS == "SNV"
+consequences =
+    missense_variant
+    synonymous_variant

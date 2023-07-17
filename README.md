@@ -44,3 +44,9 @@ conda activate SM_Pfam-gnomAD-pipeline
 varalign --help
 ```
 
+# Pipeline
+
+```bash
+ snakemake -p -j 1 --use-conda split_pfam
+ snakemake -p -j 1 --use-conda
+```
