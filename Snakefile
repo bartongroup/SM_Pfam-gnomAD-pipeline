@@ -6,9 +6,9 @@ rule all:
 
 rule get_data:
     input:
-        "data/Pfam-A.seed.gz",
-        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz",
-        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz.tbi"
+        "data/downloads/pfam/Pfam-A.seed.gz",
+        "data/downloads/gnomad/gnomad.exomes.r2.1.1.sites.22.vcf.bgz",
+        "data/downloads/gnomad/gnomad.exomes.r2.1.1.sites.22.vcf.bgz.tbi"
 
 # rule all:
 #     input:
@@ -21,7 +21,7 @@ rule get_data:
 
 rule download_pfam:
     output:
-        "data/Pfam-A.seed.gz"
+        "data/downloads/pfam/Pfam-A.seed.gz"
     params:
         url = "http://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam31.0/Pfam-A.seed.gz"
     shell:
@@ -30,7 +30,7 @@ rule download_pfam:
         """
 rule download_gnomad:
     output:
-        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
+        "data/downloads/gnomad/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
     params:
         url = "https://storage.googleapis.com/gcp-public-data--gnomad/release/2.1.1/vcf/exomes/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
     shell:
@@ -40,7 +40,7 @@ rule download_gnomad:
 
 rule download_gnomad_index:
     output:
-        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz.tbi"
+        "data/downloads/gnomad/gnomad.exomes.r2.1.1.sites.22.vcf.bgz.tbi"
     params:
         url = "https://storage.googleapis.com/gcp-public-data--gnomad/release/2.1.1/vcf/exomes/gnomad.exomes.r2.1.1.sites.22.vcf.bgz.tbi"
     shell:
@@ -50,7 +50,7 @@ rule download_gnomad_index:
 
 rule split_pfam:
     input:
-        "data/Pfam-A.seed.gz"
+        "data/downloads/pfam/Pfam-A.seed.gz"
     output:
         directory("output")
     params:
@@ -65,16 +65,18 @@ rule annotate_variants:
     conda:
         "environment-vep.yml"
     input:
-        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
+        "data/downloads/gnomad/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
     output:
-        "data/gnomad.exomes.r2.1.1.sites.22.vep.vcf"
+        "data/processed/gnomad/gnomad.exomes.r2.1.1.sites.22.vep.vcf.bgz"
+    log: 
+        out = 'data/processed/gnomad/vep_stdout.log',
+        err = 'data/processed/gnomad/vep_stderr.err'
     shell:
         """
         vep_install -a cf -s homo_sapiens -y GRCh37 -c resources/vep —CONVERT
-        vep --fork 4 --cache --dir_cache "resources/vep" -a GRCh37 --offline --compress_output bgzip \
+        vep --verbose --fork 4 --cache --dir_cache "resources/vep" -a GRCh37 --offline --compress_output bgzip \
             --vcf --variant_class --uniprot --canonical --biotype --ccds --coding_only \
-            -i "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz" \
-            -o "data/gnomad.exomes.r2.1.1.sites.22.vep.vcf.bgz"
+            -i {input} -o {output} 2> {log.err} 1> {log.out}
         """
 
 def generate_execute_tool_input(wildcards):
