@@ -1,0 +1,7 @@
+name: SM_Pfam-gnomAD-pipeline_vep
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - ensembl-vep

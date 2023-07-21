@@ -1,3 +1,4 @@
 .snakemake
 data/Pfam-A.seed.gz
 output
+resources/vep

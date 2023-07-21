@@ -58,6 +58,25 @@ rule split_pfam:
     script:
         "scripts/split_pfam.py"
 
+# VEP options:
+# Default CSQ Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|FLAGS|SYMBOL_SOURCE|HGNC_ID
+# --fields "Allele,Consequence,Feature_type,Feature"
+rule annotate_variants:
+    conda:
+        "environment-vep.yml"
+    input:
+        "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz"
+    output:
+        "data/gnomad.exomes.r2.1.1.sites.22.vep.vcf"
+    shell:
+        """
+        vep_install -a cf -s homo_sapiens -y GRCh37 -c resources/vep —CONVERT
+        vep --fork 4 --cache --dir_cache "resources/vep" -a GRCh37 --offline --compress_output bgzip \
+            --vcf --variant_class --uniprot --canonical --biotype --ccds --coding_only \
+            -i "data/gnomad.exomes.r2.1.1.sites.22.vcf.bgz" \
+            -o "data/gnomad.exomes.r2.1.1.sites.22.vep.vcf.bgz"
+        """
+
 def generate_execute_tool_input(wildcards):
     dir_pattern = f"output/{wildcards.dir}"
     dir_id_pattern = f"{dir_pattern}/{wildcards.id}/{wildcards.id}.sto"
